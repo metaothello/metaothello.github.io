@@ -4,8 +4,6 @@ toc: false
 ---
 
 <div class="hero">
-  <div class="venue-badge">ICML 2026 &nbsp;·&nbsp; Seoul, South Korea</div>
-
   <h1>MetaOthello: A Controlled Study of Multiple World Models in Transformers</h1>
 
   <p class="authors">
@@ -21,14 +19,14 @@ toc: false
 
   <p class="equal-contrib">*Equal contribution</p>
 
+  <p class="venue-caption">ICML 2026 &nbsp;·&nbsp; Seoul, South Korea</p>
+
   <div class="button-row">
-    <a class="btn btn-primary" href="https://arxiv.org/pdf/2602.23164" target="_blank" rel="noopener"><span class="btn-icon">&#128196;</span> Paper</a>
-    <a class="btn" href="https://arxiv.org/abs/2602.23164" target="_blank" rel="noopener"><span class="btn-icon">&#9998;</span> arXiv</a>
+    <a class="btn btn-primary" href="https://arxiv.org/abs/2602.23164" target="_blank" rel="noopener"><span class="btn-icon">&#9998;</span> arXiv</a>
     <a class="btn" href="https://github.com/aviralchawla/metaothello" target="_blank" rel="noopener"><span class="btn-icon">&#9733;</span> Code</a>
     <a class="btn" href="https://huggingface.co/aviralchawla/metaothello" target="_blank" rel="noopener"><span class="btn-icon">&#129303;</span> Models</a>
     <a class="btn" href="https://huggingface.co/datasets/aviralchawla/metaothello" target="_blank" rel="noopener"><span class="btn-icon">&#129303;</span> Dataset</a>
-    <a class="btn" href="#poster"><span class="btn-icon">&#127916;</span> Poster</a>
-    <a class="btn" href="#citation"><span class="btn-icon">&#10088;&#10089;</span> BibTeX</a>
+    <a class="btn" href="#cite"><span class="btn-icon">&#10088;&#10089;</span> Cite Us</a>
   </div>
 </div>
 
@@ -49,17 +47,17 @@ Foundation models must handle multiple generative processes, yet mechanistic int
 </div>
 </section>
 
-<section id="method">
+<section id="framework">
 <div class="wrap-wide">
 
 ## The MetaOthello Framework
 
-<p class="lede">A shared 8&times;8 board and vocabulary, several incompatible rule sets, and linear probes that recover whichever board state the model is actually tracking.</p>
+<p class="lede">A shared 8&times;8 board and vocabulary, several incompatible rule sets.</p>
 
 <div class="figure-block">
-  <img src="./assets/method-figure.png" alt="The MetaOthello framework: a table of game variants (Classic, NoMidFlip, DelFlank) with different validation and update rules; sampled sequences that are ambiguous under multiple rule sets; a small GPT trained on these sequences; and linear probes recovering the board state implied by each rule set from the model's residual stream.">
+  <img src="./assets/gamerules.png" alt="Table of MetaOthello game variants: Classic, NoMiddleFlip, and DeleteFlanking, each with a different initialization, validation rule, and update rule for how tiles are flipped.">
 </div>
-<p class="figure-caption"><strong>The MetaOthello framework.</strong> <em>(Left)</em> We define a universe of games sharing a board size and vocabulary but differing in dynamics &mdash; e.g., which flanking rule flips a tile. <em>(Middle)</em> We sample move sequences from these games. Early in a game, a sequence is often valid under more than one rule set, creating an informational conflict for the model. <em>(Right)</em> We train a small GPT on mixed-variant sequences and use linear probes on the residual stream to reconstruct the internal board representation implied by each rule set.</p>
+<p class="figure-caption"><strong>Game variants.</strong> Each MetaOthello variant shares the same board and token vocabulary but differs in its validation rule (what makes a move legal) and its update rule (which tiles flip as a result). <em>Classic</em> and <em>NoMiddleFlip</em> share a flanking-based validation rule but update the board differently; <em>DeleteFlanking</em> changes both the validation rule (neighbor-based) and the update rule (flanked tiles are removed rather than flipped). Because the games diverge in different ways, an early move sequence is often legal &mdash; and consistent with different board states &mdash; under more than one rule set at once.</p>
 
 </div>
 </section>
@@ -72,90 +70,34 @@ Foundation models must handle multiple generative processes, yet mechanistic int
 <div class="findings-grid">
   <div class="finding-card">
     <div class="finding-number">1</div>
-    <h3>Cross-variant alignment</h3>
-    <p>Transformers trained on heterogeneous game data do not partition capacity into isolated sub-models. Board-state representations learned for one game transfer causally to others: linear probes trained on one variant intervene on another&rsquo;s internal state with effectiveness approaching matched probes.</p>
+    <h3>Shared, causally interchangeable representations</h3>
+    <p>Transformers trained on multiple Othello variants do not partition capacity into isolated sub-models. Board-state representations are largely shared and abstract: linear probes trained on one game causally intervene on another&rsquo;s internal state nearly as well as matched probes.</p>
   </div>
   <div class="finding-card">
     <div class="finding-number">2</div>
-    <h3>Syntax invariance</h3>
-    <p>For isomorphic games with scrambled tokenization, representations are equivalent up to a single orthogonal rotation that generalizes across layers &mdash; showing the model learns abstract structure independent of surface tokens.</p>
+    <h3>The model also learns to route game identity</h3>
+    <p>Beyond tracking board state, the model performs a second job: a localized mid-layer circuit constructs and identifies which game is being played, and steering it causally controls which rule system the model applies to an ambiguous sequence.</p>
   </div>
   <div class="finding-card">
     <div class="finding-number">3</div>
-    <h3>Economization &amp; causal routing</h3>
-    <p>The model shares representation where games agree and diverges only where rules conflict. A localized mid-layer circuit constructs and routes game identity: steering it causally controls which rule system the model applies to an ambiguous prefix, while a matched control does not.</p>
+    <h3>When game sequences diverge, a targeted mechanism resolves the ambiguity</h3>
+    <p>The model shares representation where games agree and diverges only where rules conflict. Rather than maintaining fully separate world models, it localizes conflict to an identifiable, steerable mechanism.</p>
   </div>
 </div>
 
 </div>
 </section>
 
-<section id="results">
-<div class="wrap-wide">
-
-## Results
-
-<p class="lede">A sample of the quantitative evidence behind each finding &mdash; see the paper for the full set of ablations, variants, and controls.</p>
-
-<div class="gallery-grid">
-  <div class="gallery-item">
-    <img src="./assets/figures/board-probe-accuracy.png" alt="Board-state probe accuracy by layer, for four single-game models and three mixed-game models.">
-    <div class="gallery-item-body">
-      <h3>Board state is decodable at every layer</h3>
-      <p>Linear probes recover the true board state with &gt;97% accuracy by the final layer, for every single-game and mixed-game model &mdash; mixing rule systems does not degrade probe accuracy.</p>
-    </div>
-  </div>
-  <div class="gallery-item">
-    <img src="./assets/figures/intervention-comparison.png" alt="Prediction error under null, correct, and cross-variant probe interventions, for Classic vs NoMidFlip and Classic vs DelFlank.">
-    <div class="gallery-item-body">
-      <h3>Cross-game probes intervene almost as well as matched probes</h3>
-      <p>Steering with a probe trained on a <em>different</em> variant (&ldquo;Cross&rdquo;) reduces prediction error nearly as much as steering with the game&rsquo;s own probe (&ldquo;Correct&rdquo;) &mdash; both far below the untargeted (&ldquo;Null&rdquo;) baseline.</p>
-    </div>
-  </div>
-  <div class="gallery-item">
-    <img src="./assets/figures/iago-alignment.png" alt="Mean Iago alpha score across move number, for interventions applied at each transformer layer, compared against a Classic baseline.">
-    <div class="gallery-item-body">
-      <h3>A single rotation aligns isomorphic games</h3>
-      <p>One learned orthogonal rotation &Omega;, applied to Classic activations, recovers valid Iago moves &mdash; and stays close to the Classic baseline across the whole game and at nearly every layer.</p>
-    </div>
-  </div>
-  <div class="gallery-item">
-    <img src="./assets/figures/model-accuracy.png" alt="Move-prediction alpha score for single-game and mixed-game models across four Othello variants.">
-    <div class="gallery-item-body">
-      <h3>Multi-game training costs little accuracy</h3>
-      <p>Move-prediction alpha-scores for mixed-game models stay within about a point of matched single-game models &mdash; the model absorbs a second rule system cheaply.</p>
-    </div>
-  </div>
-</div>
-
-</div>
-</section>
-
-<section id="poster">
-<div class="wrap-wide">
-
-## Poster
-
-<p class="lede">Presented at ICML 2026, Seoul, South Korea.</p>
-
-<div class="poster-frame">
-  <img src="./assets/poster.png" alt="MetaOthello ICML 2026 conference poster.">
-  <p class="poster-links"><a href="./assets/poster.png" download>Download poster (PNG) &rarr;</a></p>
-</div>
-
-</div>
-</section>
-
-<section id="citation">
+<section id="cite">
 <div class="wrap">
 
-## Citation
+## Cite Us
 
 If you find MetaOthello useful, please cite our paper:
 
 </div>
 
-<div class="wrap bibtex-wrap">
+<div class="wrap cite-wrap">
 
 ```bibtex
 @inproceedings{chawla2026metaothello,
