@@ -4,7 +4,7 @@ toc: false
 ---
 
 <div class="hero">
-  <h1>MetaOthello: A Controlled Study of Multiple World Models in Transformers</h1>
+  <h1><strong class="title-strong">MetaOthello</strong><span class="title-semi">: A Controlled Study of Multiple World Models in Transformers</span></h1>
 
   <p class="authors">
     <a href="https://aviralchawla.github.io" target="_blank" rel="noopener">Aviral Chawla</a><sup>1,*</sup> &nbsp;
@@ -22,17 +22,17 @@ toc: false
   <p class="venue-caption">ICML 2026 &nbsp;·&nbsp; Seoul, South Korea</p>
 
   <div class="button-row">
-    <a class="btn btn-primary" href="https://arxiv.org/abs/2602.23164" target="_blank" rel="noopener"><span class="btn-icon">&#9998;</span> arXiv</a>
-    <a class="btn" href="https://github.com/aviralchawla/metaothello" target="_blank" rel="noopener"><span class="btn-icon">&#9733;</span> Code</a>
-    <a class="btn" href="https://huggingface.co/aviralchawla/metaothello" target="_blank" rel="noopener"><span class="btn-icon">&#129303;</span> Models</a>
-    <a class="btn" href="https://huggingface.co/datasets/aviralchawla/metaothello" target="_blank" rel="noopener"><span class="btn-icon">&#129303;</span> Dataset</a>
-    <a class="btn" href="#cite"><span class="btn-icon">&#10088;&#10089;</span> Cite Us</a>
+    <a class="btn btn-primary" href="https://arxiv.org/abs/2602.23164" target="_blank" rel="noopener">arXiv</a>
+    <a class="btn" href="https://github.com/aviralchawla/metaothello" target="_blank" rel="noopener">Code</a>
+    <a class="btn" href="https://huggingface.co/aviralchawla/metaothello" target="_blank" rel="noopener">Models</a>
+    <a class="btn" href="https://huggingface.co/datasets/aviralchawla/metaothello" target="_blank" rel="noopener">Dataset</a>
+    <a class="btn" href="#cite">Cite Us</a>
   </div>
 </div>
 
 <div class="hero-image-wrap">
   <img src="./assets/hero.png" alt="MetaOthello overview: an ambiguous move sequence is consistent with two different Othello variants (Classic and NoMidFlip); a transformer trained on both processes the sequence through shared early layers, and linear probes recover the correct, variant-specific board state at a later layer.">
-  <p class="hero-caption">A single move sequence can be legal under two different Othello rule sets at once. MetaOthello trains one transformer on mixed rule systems and asks: whose board state does it actually track &mdash; and how?</p>
+  <p class="hero-caption">MetaOthello is a suite of Othello-like games that share the same 8&times;8 board and token vocabulary but follow different rules for what counts as a legal move and how the board updates. We train small GPTs on sequences sampled from mixtures of these games, then use linear probes to read out &mdash; and intervene on &mdash; the board state the model believes it is tracking. When an early move sequence is ambiguous between rule sets, does the model keep one shared world model, several separate ones, or something in between?</p>
 </div>
 
 <section id="abstract">
@@ -41,7 +41,7 @@ toc: false
 ## Abstract
 
 <p class="abstract-body">
-Foundation models must handle multiple generative processes, yet mechanistic interpretability largely studies capabilities in isolation; it remains unclear how a single transformer organizes multiple, potentially conflicting &ldquo;world models&rdquo;. Previous experiments on Othello-playing neural networks test world-model learning, but focus on a single game with a single set of rules. We introduce <em>MetaOthello</em>, a controlled suite of Othello-like games with shared syntax but different rules or tokenizations, and train small GPTs on mixed-variant data. We show that transformers trained on multiple Othello variants learn <strong>shared world-state representations</strong>: linear probes trained on one game intervene on another&rsquo;s board state nearly as well as matched probes. When the games conflict, the model resolves the resulting <em>ambiguity</em> through a localized mechanism we identify and steer. For isomorphic games with token remapping, representations are equivalent up to a single orthogonal rotation that generalizes across layers, showing the shared structure is abstract rather than tied to surface form. Together, these results show that transformers reconcile conflicting world models by sharing structure and localizing conflict. <em>MetaOthello</em> thus offers a path toward understanding how transformers organize many world models at once.
+Foundation models must handle multiple generative processes, yet mechanistic interpretability largely studies capabilities in isolation; how a single transformer organizes multiple, potentially conflicting &ldquo;world models&rdquo; remains unclear. Prior work on Othello-playing networks tests world-model learning but focuses on one game with one rule set. We introduce <em>MetaOthello</em>, a suite of Othello-like games with shared syntax but different rules or tokenizations, and train small GPTs on mixed-variant data. Transformers trained on multiple variants learn <strong>shared world-state representations</strong>: probes trained on one game intervene on another&rsquo;s board state nearly as well as matched probes. When games conflict, the model resolves the ambiguity through a localized mechanism we identify and steer. For isomorphic games with token remapping, representations are equivalent up to a single orthogonal rotation that generalizes across layers, showing the shared structure is abstract rather than surface-tied. These results show that transformers reconcile conflicting world models by sharing structure and localizing conflict, offering a path toward understanding how they organize many world models at once.
 </p>
 
 </div>
@@ -70,18 +70,18 @@ Foundation models must handle multiple generative processes, yet mechanistic int
 <div class="findings-grid">
   <div class="finding-card">
     <div class="finding-number">1</div>
-    <h3>Shared, causally interchangeable representations</h3>
-    <p>Transformers trained on multiple Othello variants do not partition capacity into isolated sub-models. Board-state representations are largely shared and abstract: linear probes trained on one game causally intervene on another&rsquo;s internal state nearly as well as matched probes.</p>
+    <h3>Shared Representations</h3>
+    <p>Transformers learn to generalize shared abstractions. Board represenations for two disparate games is causally interchangeable.</p>
   </div>
   <div class="finding-card">
     <div class="finding-number">2</div>
-    <h3>The model also learns to route game identity</h3>
-    <p>Beyond tracking board state, the model performs a second job: a localized mid-layer circuit constructs and identifies which game is being played, and steering it causally controls which rule system the model applies to an ambiguous sequence.</p>
+    <h3>Shared Computation</h3>
+    <p>Models also perform game-general computations in early layers and then later identify game identity for game specific calculations.</p>
   </div>
   <div class="finding-card">
     <div class="finding-number">3</div>
-    <h3>When game sequences diverge, a targeted mechanism resolves the ambiguity</h3>
-    <p>The model shares representation where games agree and diverges only where rules conflict. Rather than maintaining fully separate world models, it localizes conflict to an identifiable, steerable mechanism.</p>
+    <h3>Ambiguity Circuit</h3>
+    <p>When game sequences overlap and board representations are causally shared, we show mechanisms of how model resolve ambiguity.</p>
   </div>
 </div>
 
@@ -100,7 +100,7 @@ If you find MetaOthello useful, please cite our paper:
 <div class="wrap cite-wrap">
 
 ```bibtex
-@inproceedings{chawla2026metaothello,
+@inproceedings{chawla_hall_2026_metaothello,
   title     = {MetaOthello: A Controlled Study of Multiple World Models in Transformers},
   author    = {Chawla, Aviral and Hall, Galen and Lovato, Juniper},
   booktitle = {Proceedings of the 43rd International Conference on Machine Learning},
@@ -116,6 +116,10 @@ If you find MetaOthello useful, please cite our paper:
 </section>
 
 <footer class="site-footer">
+  <div class="footer-logos">
+    <a class="logo-vcsi" href="https://vermontcomplexsystems.org" target="_blank" rel="noopener"><img src="./assets/vcsi.png" alt="Vermont Complex Systems Institute"></a>
+    <a class="logo-cel" href="https://www.compethicslab.org" target="_blank" rel="noopener"><img src="./assets/cel_logo.png" alt="Computational Ethics Lab at UVM"></a>
+  </div>
   <p class="footer-authors">
     <a href="https://aviralchawla.github.io" target="_blank" rel="noopener">Aviral Chawla</a> &nbsp;·&nbsp;
     <a href="https://galenhall.net" target="_blank" rel="noopener">Galen Hall</a> &nbsp;·&nbsp;
