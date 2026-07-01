@@ -4,8 +4,8 @@ Project page for [**MetaOthello: A Controlled Study of Multiple World Models in 
 
 ## Branches
 
-- **`source`** — the Framework project (this branch): page content (`src/index.md`), styles, and the raw paper/figure/poster assets under `metaothello/`. All development happens here.
-- **`main`** — default branch; GitHub Pages is served from the build artifact produced by the `Deploy site` GitHub Action, which triggers on every push to `source`.
+- **`source`** — the Framework project (this branch): page content (`src/index.md`), styles, and assets. All development happens here.
+- **`main`** — default branch; GitHub Pages serves from here. The `Deploy site` GitHub Action builds on every push to `source` and force-pushes the `dist/` output to `main`. Don't commit to `main` directly — it's overwritten on every deploy.
 
 ## Developing
 
@@ -28,5 +28,4 @@ Outputs the static site to `dist/`.
 
 - `src/index.md` — the single-page site.
 - `src/style.css` — custom styles on top of Observable Framework's default theme.
-- `src/assets/` — images/figures used by the site (copies of files curated from `metaothello/`).
-- `metaothello/` — raw source materials: paper, poster, LaTeX source, and full figure set.
+- `src/assets/` — images/figures used by the site.
