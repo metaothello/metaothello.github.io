@@ -14,13 +14,13 @@
 :root {
   --theme-background-a: #f4efea;
   --theme-foreground: #262421;
-  --theme-foreground-focus: #1d6fd1;
+  --theme-foreground-focus: #2f56b8;
   color-scheme: light only;
 
   --content-width: 800px;
   --wide-width: 1080px;
-  --accent: #5b7fe0;
-  --accent-soft: #eaf1fb;
+  --accent: #2f56b8;
+  --accent-soft: #e6edfa;
   --border-radius: 8px;
   --monospace:
     "SF Mono",
@@ -88,7 +88,7 @@ section {
 }
 
 section h2 {
-  font-size: 1.6rem;
+  font-size: 2rem;
   text-align: center;
   margin: 0 auto 0.35rem auto;
 }
@@ -128,6 +128,8 @@ section h2 {
 
 .hero h1 .title-strong {
   font-weight: 800;
+  font-style: italic;
+  font-size: 1.12em;
 }
 
 .hero h1 .title-semi {
@@ -135,7 +137,7 @@ section h2 {
 }
 
 .authors {
-  font-size: 17px;
+  font-size: 20px;
   line-height: 1.6;
   max-width: 720px;
   margin: 0 auto 0.4rem auto;
@@ -186,7 +188,7 @@ section h2 {
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  margin: 1.75rem auto 3rem auto;
+  margin: 1.75rem auto 2rem auto;
   max-width: 760px;
 }
 
@@ -194,14 +196,14 @@ section h2 {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  font: 700 17px/1 var(--serif);
-  padding: 0.8rem 1.6rem;
-  border-radius: 14px;
-  border: 2px solid var(--accent);
+  font: 500 15px/1 var(--sans-serif);
+  padding: 0.5rem 1.05rem;
+  border-radius: 6px;
+  border: 1.5px solid var(--accent);
   background: var(--theme-background);
   color: var(--theme-foreground) !important;
   text-decoration: none !important;
-  transition: background 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+  transition: background 120ms ease, transform 120ms ease;
 }
 
 .btn:hover {
@@ -214,7 +216,6 @@ section h2 {
   border-color: var(--accent);
   color: #fff !important;
   text-decoration: none !important;
-  box-shadow: 0 2px 6px color-mix(in srgb, var(--accent) 35%, transparent);
 }
 
 .btn-primary:hover {
@@ -247,12 +248,20 @@ section h2 {
 
 /* ---------- abstract ---------- */
 
+.abstract-box {
+  max-width: 620px;
+  margin: 0 auto;
+  padding-left: 1.6rem;
+  border-left: 1.5px solid color-mix(in srgb, var(--theme-foreground) 22%, transparent);
+  text-align: left;
+}
+
 .abstract-body {
-  font-size: 1.05rem;
-  line-height: 1.75;
+  font-size: 0.82rem;
+  line-height: 1.65;
   color: var(--theme-foreground-alt);
-  text-align: justify;
-  margin-top: 1.75rem;
+  text-align: left;
+  margin: 0;
 }
 
 /* ---------- figure block ---------- */
@@ -349,15 +358,15 @@ section h2 {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 108px;
-  height: 108px;
+  width: 140px;
+  height: 140px;
   opacity: 0.85;
   transition: opacity 120ms ease, transform 120ms ease;
 }
 
 .footer-logos a.logo-vcsi {
-  width: 102px;
-  height: 102px;
+  width: 132px;
+  height: 132px;
 }
 
 .footer-logos a:hover {
